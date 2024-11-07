@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/models/productcust.dart';
+import 'package:flutter_application_1/utils/const.dart';
 import '../services/api_service.dart';
 
 class LaporanPemesananProductScreen extends StatelessWidget {
@@ -28,7 +29,10 @@ class LaporanPemesananProductScreen extends StatelessWidget {
               itemCount: orders.length,
               itemBuilder: (context, index) {
                 ProductCust order = orders[index];
+                // String imageUrl = Uri.encodeFull(
+                //     '$host/files/product/${order.gambar}');
                 return ListTile(
+                  // leading: Image.network(imageUrl),
                   leading: const Icon(Icons.phone_android),
                   title: Text(order.noHp),
                   subtitle: Column(

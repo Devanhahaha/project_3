@@ -6,6 +6,7 @@ import 'package:flutter_application_1/models/bayartagihan.dart';
 import 'package:flutter_application_1/models/services.dart';
 import 'package:flutter_application_1/models/transaksi.dart';
 import 'package:flutter_application_1/utils/const.dart';
+import 'package:flutter_application_1/utils/preferences_helper.dart';
 import 'package:http/http.dart' as http;
 import 'dart:developer';
 
@@ -14,7 +15,14 @@ class ApiService {
 
   Future<List<TransactionData>> fetchTransactionSummary() async {
     final response =
-        await http.get(Uri.parse('$baseUrl/transaksi'));
+        await http.get(Uri.parse('$baseUrl/transaksi'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${PreferencesHelper.instance.accessToken}'
+        },
+
+      );
 
     if (response.statusCode == 200) {
        List<dynamic> data = json.decode(response.body);
@@ -32,6 +40,7 @@ class ApiService {
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
+          'Authorization': 'Bearer ${PreferencesHelper.instance.accessToken}'
         },
       );
 
@@ -49,18 +58,21 @@ class ApiService {
   }
 
   // Method to handle user login
-  Future<bool> login(String username, String password) async {
+  Future<bool> login(String email, String password) async {
     try {
       final response = await http.post(
         Uri.parse('$baseUrl/login'),
         body: json.encode({
-          'username': username,
+          'email': email,
           'password': password,
         }),
         headers: {'Content-Type': 'application/json'},
       );
 
       if (response.statusCode == 200) {
+        final data = jsonDecode(response.body) as Map<String, dynamic>;
+        await PreferencesHelper.instance.saveAccessToken(data['token']);
+        await PreferencesHelper.instance.saveUserData(jsonEncode(data['user']));
         return true;
       } else {
         log('Login failed: ${response.statusCode}');
@@ -74,23 +86,28 @@ class ApiService {
 
   // Method to submit pulsa order
   Future<bool> submitPulsaOrder(
-      String name, String phone, double amount, String provider) async {
+      String name, String phone, double nominal, String provider) async {
     try {
       final response = await http.post(
         Uri.parse('$baseUrl/pulsa'),
         body: json.encode({
-          'name': name,
-          'phone': phone,
-          'amount': amount,
-          'provider': provider,
+          'nama': name,
+          'no_telp': phone,
+          'harga': nominal + 2000,
+          'tipe_kartu': provider,
+          'nominal': nominal,
         }),
-        headers: {'Content-Type': 'application/json'},
+       headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${PreferencesHelper.instance.accessToken}'
+        },
       );
 
       if (response.statusCode == 200) {
         return true;
       } else {
-        log('Failed to submit pulsa order: ${response.statusCode}');
+        log('Failed to submit pulsa order: ${response.body}');
         return false;
       }
     } catch (e) {
@@ -111,7 +128,11 @@ class ApiService {
           'amount': amount,
           'provider': provider,
         }),
-        headers: {'Content-Type': 'application/json'},
+       headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${PreferencesHelper.instance.accessToken}'
+        },
       );
 
       if (response.statusCode == 200) {
@@ -134,6 +155,7 @@ class ApiService {
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
+          'Authorization': 'Bearer ${PreferencesHelper.instance.accessToken}'
         },
       );
 
@@ -155,9 +177,10 @@ class ApiService {
     try {
       final response = await http.get(
         Uri.parse('$baseUrl/pulsa'),
-        headers: {
+       headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
+          'Authorization': 'Bearer ${PreferencesHelper.instance.accessToken}'
         },
       );
       if (response.statusCode == 200) {
@@ -181,6 +204,7 @@ class ApiService {
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
+          'Authorization': 'Bearer ${PreferencesHelper.instance.accessToken}'
         },
       );
 
@@ -202,9 +226,10 @@ class ApiService {
     try {
       final response = await http.get(
         Uri.parse('$baseUrl/services'),
-        headers: {
+       headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
+          'Authorization': 'Bearer ${PreferencesHelper.instance.accessToken}'
         },
       );
 
@@ -229,6 +254,7 @@ class ApiService {
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
+          'Authorization': 'Bearer ${PreferencesHelper.instance.accessToken}'
         },
       );
 

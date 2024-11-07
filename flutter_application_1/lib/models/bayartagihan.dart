@@ -5,6 +5,7 @@ class Bayartagihan {
   final String noTagihan;
   final String tipeTagihan;
   final int nominal;
+  final int harga;
   final DateTime createdAt;
   final DateTime updatedAt;
 
@@ -15,6 +16,7 @@ class Bayartagihan {
     required this.noTagihan,
     required this.tipeTagihan,
     required this.nominal,
+    required this.harga,
     required this.createdAt,
     required this.updatedAt,
   });
@@ -28,6 +30,7 @@ class Bayartagihan {
       noTagihan: json['no_tagihan'],
       tipeTagihan: json['tipe_tagihan'],
       nominal: json['nominal'],
+      harga: json['harga'],
       createdAt: DateTime.parse(json['created_at']),
       updatedAt: DateTime.parse(json['updated_at']),
     );
@@ -42,6 +45,7 @@ class Bayartagihan {
       'no_tagihan': noTagihan,
       'tipe_tagihan': tipeTagihan,
       'nominal': nominal,
+      'harga': harga,
       'created_at': createdAt.toIso8601String(),
       'updated_at': updatedAt.toIso8601String(),
     };

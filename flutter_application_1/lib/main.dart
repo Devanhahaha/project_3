@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
-import 'screens/home_screen.dart';
+import 'package:flutter_application_1/screens/dashboard_screen.dart';
+import 'package:flutter_application_1/screens/home_screen.dart';
+import 'package:flutter_application_1/utils/preferences_helper.dart';
 import 'screens/auth_screen.dart';
 // import 'screens/login_screen.dart'; 
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await PreferencesHelper.instance.init();
   runApp(const MyServiceApp());
 }
 
@@ -18,7 +22,7 @@ class MyServiceApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const AuthScreen(), // Mulai dari layar AuthScreen
+      home: PreferencesHelper.instance.accessToken != null ? const HomeScreen() : const AuthScreen(), // Mulai dari layar AuthScreen
     );
   }
 }

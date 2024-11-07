@@ -14,6 +14,7 @@ class ProductCust {
   final String? ongkiru;
   final int quantity;
   final int subTotal;
+  // final String gambar;
 
   ProductCust({
     required this.id,
@@ -31,6 +32,7 @@ class ProductCust {
     this.ongkiru,
     required this.quantity,
     required this.subTotal,
+    // required this.gambar,
   });
 
   // Method fromJson untuk parsing JSON menjadi objek Transaction
@@ -51,6 +53,7 @@ class ProductCust {
       ongkiru: json['ongkiru'],
       quantity: json['quantity'],
       subTotal: json['sub_total'],
+      // gambar: json['gambar'],
     );
   }
 

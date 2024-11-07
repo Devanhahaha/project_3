@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/services/api_service.dart';
 import 'home_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -13,12 +14,14 @@ class _LoginScreenState extends State<LoginScreen> {
   final _passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
-  void _login() {
+  void _login() async {
     if (_formKey.currentState!.validate()) {
-      final username = _usernameController.text;
+      final email = _usernameController.text;
       final password = _passwordController.text;
 
-      if (username == 'admin' && password == 'admin') {
+      final res = await ApiService().login(email, password);
+
+      if (res) {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => const HomeScreen()),

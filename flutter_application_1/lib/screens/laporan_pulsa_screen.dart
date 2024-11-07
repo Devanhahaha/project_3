@@ -37,6 +37,7 @@ class LaporanPulsaScreen extends StatelessWidget {
                       Text('Nama: ${order.nama}'),
                       Text('Nomor Telp: ${order.noTelp}'),
                       Text('Nominal: ${order.nominal}'),
+                      Text('Harga: ${order.harga}'),
                       Text('Tipe Kartu: ${order.tipeKartu}'),
                     ],
                   ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/services/api_service.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
@@ -18,49 +19,57 @@ class _PulsaScreenState extends State<PulsaScreen> {
 
   void _submit() async {
     if (_formKey.currentState!.validate()) {
-      final data = {
-        'nama': _nameController.text,
-        'nomor_telepon': _phoneController.text,
-        'nominal': _nominalController.text,
-        'jenis_kartu': _jenisKartu,
-      };
+      // final data = {
+      //   'nama': _nameController.text,
+      //   'nomor_telepon': _phoneController.text,
+      //   'nominal': _nominalController.text,
+      //   'jenis_kartu': _jenisKartu,
+      // };
 
       // Panggil fungsi untuk mengirim data ke API
-      await _sendDataToApi(data);
+      // await _sendDataToApi(data);
+      final res = await ApiService().submitPulsaOrder(_nameController.text, _phoneController.text, double.parse(_nominalController.text), _jenisKartu,);
 
+    if (res) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Data berhasil disimpan')),
-      );
+            const SnackBar(content: Text('Data berhasil disimpan')),
+          );
 
-      // Reset form setelah submit
-      _formKey.currentState!.reset();
+          // Reset form setelah submit
+          _formKey.currentState!.reset();
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Gagal')),
+          );
+    }
+      
     }
   }
 
-  Future<void> _sendDataToApi(Map<String, String> data) async {
-    const apiUrl =
-        'http://127.0.0.1:8000/api/pulsa'; // Ganti dengan URL API Anda
-    try {
-      final response = await http.post(
-        Uri.parse(apiUrl),
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
-        },
-        body: jsonEncode(data),
-      );
+  // Future<void> _sendDataToApi(Map<String, String> data) async {
+  //   const apiUrl =
+  //       'http://127.0.0.1:8000/api/pulsa'; // Ganti dengan URL API Anda
+  //   try {
+  //     final response = await http.post(
+  //       Uri.parse(apiUrl),
+  //       headers: <String, String>{
+  //         'Content-Type': 'application/json; charset=UTF-8',
+  //       },
+  //       body: jsonEncode(data),
+  //     );
 
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        // Jika data berhasil disimpan
-        print('Data berhasil disimpan');
-      } else {
-        // Jika ada kesalahan dari server
-        print('Gagal menyimpan data: ${response.statusCode}');
-      }
-    } catch (e) {
-      // Jika ada kesalahan dalam pengiriman request
-      print('Error: $e');
-    }
-  }
+  //     if (response.statusCode == 200 || response.statusCode == 201) {
+  //       // Jika data berhasil disimpan
+  //       print('Data berhasil disimpan');
+  //     } else {
+  //       // Jika ada kesalahan dari server
+  //       print('Gagal menyimpan data: ${response.statusCode}');
+  //     }
+  //   } catch (e) {
+  //     // Jika ada kesalahan dalam pengiriman request
+  //     print('Error: $e');
+  //   }
+  // }
 
   void _updateJenisKartu() {
     setState(() {

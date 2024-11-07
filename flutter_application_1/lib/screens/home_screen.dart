@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/utils/preferences_helper.dart';
 import 'pulsa_screen.dart';
 import 'paket_data_screen.dart';
 import 'bayar_tagihan_screen.dart';
@@ -168,7 +169,8 @@ class _HomeScreenState extends State<HomeScreen> {
             ListTile(
               leading: Icon(Icons.logout),
               title: const Text('Log Out'),
-              onTap: () {
+              onTap: () async {
+                 await PreferencesHelper.instance.clearLoginData();
                 Navigator.pop(context);
                 Navigator.pushReplacement(
                   context,

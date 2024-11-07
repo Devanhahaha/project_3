@@ -37,6 +37,7 @@ class LaporanBayarTagihanScreen extends StatelessWidget {
                       Text('Nama: ${order.nama}'),
                       Text('Nomor Kartu: ${order.noTagihan}'),
                       Text('Nominal: ${order.nominal}'),
+                      Text('Harga: ${order.harga}'),
                       Text('Jenis Tagihan: ${order.tipeTagihan}'),
                     ],
                   ),

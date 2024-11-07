@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/utils/const.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
+import 'package:flutter_application_1/utils/preferences_helper.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:developer';
@@ -28,9 +29,10 @@ class _ProductScreenState extends State<ProductScreen> {
     try {
       final response = await http.get(
         Uri.parse('$host/api/product'),
-        headers: {
+       headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
+          'Authorization': 'Bearer ${PreferencesHelper.instance.accessToken}'
         },
       );
 
@@ -55,6 +57,7 @@ class _ProductScreenState extends State<ProductScreen> {
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
+          'Authorization': 'Bearer ${PreferencesHelper.instance.accessToken}'
         },
       );
 
