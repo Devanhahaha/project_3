@@ -1,3 +1,5 @@
+import 'package:flutter_application_1/models/product.dart';
+
 class ProductCust {
   final int id;
   final int productId;
@@ -14,6 +16,7 @@ class ProductCust {
   final String? ongkiru;
   final int quantity;
   final int subTotal;
+  final Product? product;
   // final String gambar;
 
   ProductCust({
@@ -32,6 +35,7 @@ class ProductCust {
     this.ongkiru,
     required this.quantity,
     required this.subTotal,
+    this.product,
     // required this.gambar,
   });
 
@@ -53,6 +57,7 @@ class ProductCust {
       ongkiru: json['ongkiru'],
       quantity: json['quantity'],
       subTotal: json['sub_total'],
+      product: json['product'] != null ? Product.fromJson(json['product']) : null,
       // gambar: json['gambar'],
     );
   }

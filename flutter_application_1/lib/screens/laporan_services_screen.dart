@@ -39,6 +39,7 @@ class LaporanServicesScreen extends StatelessWidget {
                       Text('Jenis_HP: ${order.jenisHp}'),
                       Text('Kontak: ${order.kontak}'),
                       Text('Alamat: ${order.alamat}'),
+                      Text('Harga: ${order.nominal}'),
                     ],
                   ),
                 );

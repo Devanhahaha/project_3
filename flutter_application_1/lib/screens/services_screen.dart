@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:flutter_application_1/services/api_service.dart';
 import 'dart:convert';
 
 class ServicesScreen extends StatefulWidget {
@@ -19,50 +20,56 @@ class _ServicesScreenState extends State<ServicesScreen> {
 
   void _submit() async {
     if (_formKey.currentState!.validate()) {
-      final data = {
-        'nama': _nameController.text,
-        'keluhan': _keluhanController.text,
-        'jenis_hp': _jenisHpController.text,
-        'kontak': _kontakController.text,
-        'alamat': _alamatController.text,
-      };
+      // final data = {
+      //   'nama': _nameController.text,
+      //   'keluhan': _keluhanController.text,
+      //   'jenis_hp': _jenisHpController.text,
+      //   'kontak': _kontakController.text,
+      //   'alamat': _alamatController.text,
+      // };
 
       // Panggil fungsi untuk mengirim data ke API
-      await _sendDataToApi(data);
-
+      // await _sendDataToApi(data);
+       final res = await ApiService().submitServicesOrder(_nameController.text, _keluhanController.text, _jenisHpController.text, _kontakController.text, _alamatController.text,);
+       if(res){
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Data berhasil disimpan')),
       );
 
       // Reset form setelah submit
       _formKey.currentState!.reset();
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Gagal')),
+          );
+    }
     }
   }
 
-  Future<void> _sendDataToApi(Map<String, String> data) async {
-    const apiUrl =
-        'http://127.0.0.1:8000/api/services'; // Ganti dengan URL API Anda
-    try {
-      final response = await http.post(
-        Uri.parse(apiUrl),
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
-        },
-        body: jsonEncode(data),
-      );
+  // Future<void> _sendDataToApi(Map<String, String> data) async {
+  //   const apiUrl =
+  //       'http://127.0.0.1:8000/api/services'; // Ganti dengan URL API Anda
+  //   try {
+  //     final response = await http.post(
+  //       Uri.parse(apiUrl),
+  //       headers: <String, String>{
+  //         'Content-Type': 'application/json; charset=UTF-8',
+  //       },
+  //       body: jsonEncode(data),
+  //     );
 
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        // Jika data berhasil disimpan
-        print('Data berhasil disimpan');
-      } else {
-        // Jika ada kesalahan dari server
-        print('Gagal menyimpan data: ${response.statusCode}');
-      }
-    } catch (e) {
-      // Jika ada kesalahan dalam pengiriman request
-      print('Error: $e');
-    }
-  }
+  //     if (response.statusCode == 200 || response.statusCode == 201) {
+  //       // Jika data berhasil disimpan
+  //       print('Data berhasil disimpan');
+  //     } else {
+  //       // Jika ada kesalahan dari server
+  //       print('Gagal menyimpan data: ${response.statusCode}');
+  //     }
+  //   } catch (e) {
+  //     // Jika ada kesalahan dalam pengiriman request
+  //     print('Error: $e');
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {

@@ -118,15 +118,16 @@ class ApiService {
 
   // Method to submit paket data order
   Future<bool> submitPaketdataOrder(
-      String name, String phone, double amount, String provider) async {
+      String name, String phone, String nominal, String provider) async {
     try {
       final response = await http.post(
         Uri.parse('$baseUrl/paketdata'),
         body: json.encode({
-          'name': name,
-          'phone': phone,
-          'amount': amount,
-          'provider': provider,
+          'nama': name,
+          'no_telp': phone,
+          'tipe_kartu': provider,
+          'nominal': nominal,
+          'harga': nominal,
         }),
        headers: {
           'Content-Type': 'application/json',
@@ -138,7 +139,7 @@ class ApiService {
       if (response.statusCode == 200) {
         return true;
       } else {
-        log('Failed to submit paket data order: ${response.statusCode}');
+        log('Failed to submit paket data order: ${response.body}');
         return false;
       }
     } catch (e) {
@@ -221,6 +222,37 @@ class ApiService {
       throw Exception('Error fetching bayartagihan orders');
     }
   }
+  
+  Future<bool> submitBayartagihanOrder(String nama, String noTagihan, String tipeTagihan, double nominal,) async {
+  try {
+    final response = await http.post(
+      Uri.parse('$baseUrl/bayartagihan'),
+      body: json.encode({
+        'nama': nama,
+        'no_tagihan': noTagihan,
+        'tipe_tagihan': tipeTagihan,
+        'nominal': nominal,
+        'harga': nominal + 3000,
+      }),
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer ${PreferencesHelper.instance.accessToken}'
+      },
+    );
+
+    if (response.statusCode == 200) {
+      log('Bayartagihan order created successfully');
+      return true; // Tambahkan return true jika berhasil
+    } else {
+      log('Failed to create Bayartagihan order: ${response.body}');
+      return false; // Return false jika gagal
+    }
+  } catch (e) {
+    log('Error creating bayartagihan order: $e');
+    return false; // Return false jika terjadi error
+  }
+}
 
   Future<List<Services>> fetchServicesOrders() async {
     try {
@@ -245,6 +277,37 @@ class ApiService {
       log('Error fetching Services orders: $e');
       throw Exception('Error fetching Services orders');
     }
+  }
+
+  Future<bool> submitServicesOrder(String nama, String keluhan, String jenis_hp, String kontak, String alamat,) async {
+    try {
+      final response = await http.post(
+        Uri.parse('$baseUrl/services'),
+         body: json.encode({
+        'nama': nama,
+        'keluhan': keluhan,
+        'jenis_hp': jenis_hp,
+        'kontak': kontak,
+        'alamat': alamat,
+      }),
+       headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${PreferencesHelper.instance.accessToken}'
+        },
+      );
+
+      if (response.statusCode == 200) {
+      log('Services order created successfully');
+      return true; 
+    } else {
+      log('Failed to create Services order: ${response.body}');
+      return false; 
+    }
+  } catch (e) {
+    log('Error creating services order: $e');
+    return false;
+  }
   }
 
   Future<List<ProductCust>> fetchProductCustOrders() async {

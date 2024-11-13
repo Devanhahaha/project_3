@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'dart:developer';
 import '../models/product.dart';
 import 'package:flutter_application_1/utils/const.dart';
+import 'package:flutter_application_1/utils/preferences_helper.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 
 class EditProductScreen extends StatefulWidget {
@@ -41,9 +42,10 @@ class _EditProductScreenState extends State<EditProductScreen> {
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
+        'Authorization': 'Bearer ${PreferencesHelper.instance.accessToken}'
       },
       body: json.encode({
-        'namaProduct': _namaProduct,
+        'nama_product': _namaProduct,
         'jenis': _jenis,
         'merk': _merk,
         'deskripsi': _deskripsi,
@@ -54,8 +56,10 @@ class _EditProductScreenState extends State<EditProductScreen> {
 
     if (response.statusCode == 200) {
       log('Product updated successfully');
-      Navigator.pop(context);
       Alert(
+        closeFunction:(){
+          Navigator.pop(context);
+        },
         context: context,
         title: "Success",
         desc: "Product updated successfully!",

@@ -11,8 +11,8 @@ class LaporanPemesananProductScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Laporan Pemesanan Product'),
-        automaticallyImplyLeading: false, // Hapus panah back
-        backgroundColor: Colors.blueAccent, // Warna AppBar
+        automaticallyImplyLeading: false, // Remove back arrow
+        backgroundColor: Colors.blueAccent, // AppBar color
       ),
       body: FutureBuilder<List<ProductCust>>(
         future: ApiService().fetchProductCustOrders(),
@@ -24,20 +24,35 @@ class LaporanPemesananProductScreen extends StatelessWidget {
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
             return const Center(child: Text('Tidak ada data'));
           } else {
-            List<ProductCust> orders = snapshot.data ?? [];
+            List<ProductCust> orders = snapshot.data!;
             return ListView.builder(
               itemCount: orders.length,
               itemBuilder: (context, index) {
                 ProductCust order = orders[index];
-                // String imageUrl = Uri.encodeFull(
-                //     '$host/files/product/${order.gambar}');
+                // Image URL encoding
+                String? imageUrl;
+                if (order.product != null && order.product!.gambar.isNotEmpty) {
+                  imageUrl = Uri.encodeFull('$host/${order.product!.gambar}');
+                }
                 return ListTile(
-                  // leading: Image.network(imageUrl),
-                  leading: const Icon(Icons.phone_android),
-                  title: Text(order.noHp),
+                  leading: imageUrl != null
+                      ? Image.network(
+                          imageUrl,
+                          width: 50,
+                          height: 50,
+                          fit: BoxFit.cover,
+                        )
+                      : const Icon(Icons.image_not_supported, size: 50),
+                  title: Text(order.product?.namaProduct ?? 'No Product Name Available'),
                   subtitle: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      if (order.product != null) ...[
+                        Text('Jenis: ${order.product!.jenis}'),
+                        Text('Merk: ${order.product!.merk}'),
+                        Text('Deskripsi: ${order.product!.deskripsi}'),
+                      ] else
+                        const Text('No product details available'),
                       Text('No HP: ${order.noHp}'),
                       Text('Alamat: ${order.alamat}'),
                       Text('Catatan: ${order.catatan}'),

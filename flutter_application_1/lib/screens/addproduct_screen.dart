@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:developer';
-import 'dart:io'; 
-import 'package:image_picker/image_picker.dart'; 
+import 'dart:io';
+import 'package:image_picker/image_picker.dart';
 import 'package:flutter_application_1/utils/const.dart';
+import 'package:flutter_application_1/utils/preferences_helper.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 
 class AddProductScreen extends StatefulWidget {
@@ -20,11 +21,11 @@ class _AddProductScreenState extends State<AddProductScreen> {
   String? _deskripsi;
   int? _stok;
   int? _nominal;
-  File? _image; 
+  File? _image;
   final picker = ImagePicker();
 
   Future<void> _pickImage() async {
-    final pickedFile = await picker.pickImage(source: ImageSource.gallery); 
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
 
     setState(() {
       if (pickedFile != null) {
@@ -37,30 +38,35 @@ class _AddProductScreenState extends State<AddProductScreen> {
 
   Future<void> _addProduct() async {
     try {
-      var request = http.MultipartRequest('POST', Uri.parse('$host/api/product'));
+      var request =
+          http.MultipartRequest('POST', Uri.parse('$host/api/product'));
 
-      request.headers['Content-Type'] = 'multipart/form-data';
+      request.headers['Content-Type'] = 'application/json';
       request.headers['Accept'] = 'application/json';
+      request.headers['Authorization'] =
+          'Bearer ${PreferencesHelper.instance.accessToken}';
 
-      request.fields['namaProduct'] = _namaProduct ?? '';
+      request.fields['nama_product'] = _namaProduct ?? '';
       request.fields['jenis'] = _jenis ?? '';
       request.fields['merk'] = _merk ?? '';
       request.fields['deskripsi'] = _deskripsi ?? '';
       request.fields['stok'] = _stok?.toString() ?? '0';
       request.fields['nominal'] = _nominal?.toString() ?? '0';
 
-      // Menambahkan file gambar jika ada
       if (_image != null) {
-        request.files.add(await http.MultipartFile.fromPath('gambar', _image!.path));
+        request.files
+            .add(await http.MultipartFile.fromPath('gambar', _image!.path));
       }
+      print(request.files.first.filename);
 
-      // Mengirim request dan menunggu response
       var response = await request.send();
 
-      if (response.statusCode == 201) {
+      if (response.statusCode == 200) {
         log('Product added successfully');
-        Navigator.pop(context);
         Alert(
+          closeFunction:(){
+          Navigator.pop(context);
+          },
           context: context,
           title: "Success",
           desc: "Product added successfully!",
@@ -140,7 +146,8 @@ class _AddProductScreenState extends State<AddProductScreen> {
                 ),
                 SizedBox(height: 20),
                 _image != null
-                    ? Image.file(_image!, height: 150) // Menampilkan gambar jika sudah dipilih
+                    ? Image.file(_image!,
+                        height: 150) // Menampilkan gambar jika sudah dipilih
                     : Text('No image selected.'),
                 SizedBox(height: 10),
                 ElevatedButton(

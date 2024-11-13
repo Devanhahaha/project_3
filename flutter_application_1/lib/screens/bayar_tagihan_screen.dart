@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/services/api_service.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
@@ -18,49 +19,57 @@ class _BayarTagihanScreenState extends State<BayarTagihanScreen> {
 
   void _submit() async {
     if (_formKey.currentState!.validate()) {
-      final data = {
-        'nama': _nameController.text,
-        'nomor_tagihan': _nomorTagihanController.text,
-        'nominal': _nominalController.text,
-        'jenis_tagihan': _jenisTagihan,
-      };
+      // final data = {
+      //   'nama': _nameController.text,
+      //   'nomor_tagihan': _nomorTagihanController.text,
+      //   'nominal': _nominalController.text,
+      //   'jenis_tagihan': _jenisTagihan,
+      // };
 
       // Panggil fungsi untuk mengirim data ke API
-      await _sendDataToApi(data);
+      // await _sendDataToApi(data);
+      
+      final res = await ApiService().submitBayartagihanOrder(_nameController.text,  _nomorTagihanController.text, _jenisTagihan, double.parse(_nominalController.text),);
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Data berhasil disimpan')),
-      );
+      if (res) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Data berhasil disimpan')),
+        );
 
-      // Reset form setelah submit
-      _formKey.currentState!.reset();
-    }
-  }
-
-  Future<void> _sendDataToApi(Map<String, String> data) async {
-    const apiUrl =
-        'http://127.0.0.1:8000/api/bayartagihan'; // Ganti dengan URL API Anda
-    try {
-      final response = await http.post(
-        Uri.parse(apiUrl),
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
-        },
-        body: jsonEncode(data),
-      );
-
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        // Jika data berhasil disimpan
-        print('Data berhasil disimpan');
+        // Reset form setelah submit
+        _formKey.currentState!.reset();
       } else {
-        // Jika ada kesalahan dari server
-        print('Gagal menyimpan data: ${response.statusCode}');
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Gagal')),
+        );
       }
-    } catch (e) {
-      // Jika ada kesalahan dalam pengiriman request
-      print('Error: $e');
     }
   }
+
+  // Future<void> _sendDataToApi(Map<String, String> data) async {
+  //   const apiUrl =
+  //       'http://127.0.0.1:8000/api/bayartagihan'; // Ganti dengan URL API Anda
+  //   try {
+  //     final response = await http.post(
+  //       Uri.parse(apiUrl),
+  //       headers: <String, String>{
+  //         'Content-Type': 'application/json; charset=UTF-8',
+  //       },
+  //       body: jsonEncode(data),
+  //     );
+
+  //     if (response.statusCode == 200 || response.statusCode == 201) {
+  //       // Jika data berhasil disimpan
+  //       print('Data berhasil disimpan');
+  //     } else {
+  //       // Jika ada kesalahan dari server
+  //       print('Gagal menyimpan data: ${response.statusCode}');
+  //     }
+  //   } catch (e) {
+  //     // Jika ada kesalahan dalam pengiriman request
+  //     print('Error: $e');
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {

@@ -47,7 +47,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('DEVAN CELL'),
+        title: const Text('DEVCOM'),
       ),
       body: _pages[_selectedIndex],
       drawer: Drawer(
