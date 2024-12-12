@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/models/cartitem.dart';
 import 'package:flutter_application_1/screens/UserScreen/Cart_Screen.dart';
 import 'package:flutter_application_1/screens/UserScreen/Checkout_Screen.dart';
 import 'package:flutter_application_1/utils/const.dart';

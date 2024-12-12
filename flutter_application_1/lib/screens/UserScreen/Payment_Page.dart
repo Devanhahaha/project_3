@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
-import 'dart:convert';
-import 'package:http/http.dart' as http;
-import 'package:flutter_application_1/utils/const.dart';
 
 class PaymentPage extends StatefulWidget {
   final String snapToken;

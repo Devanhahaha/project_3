@@ -9,7 +9,6 @@ import 'dart:developer';
 import '../../models/product.dart';
 import 'productdetail_screen.dart'; // Halaman detail produk
 import 'cart_screen.dart'; // Import halaman cart jika ada
-import 'package:shared_preferences/shared_preferences.dart';
 
 class UserProduct extends StatefulWidget {
   const UserProduct({super.key});
