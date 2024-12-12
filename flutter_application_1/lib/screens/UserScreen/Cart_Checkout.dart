@@ -3,9 +3,10 @@ import 'package:flutter_application_1/models/product.dart';
 import 'package:flutter_application_1/screens/UserScreen/Payment_Page.dart';
 import 'package:flutter_application_1/utils/const.dart';
 import 'package:flutter_application_1/services/api_service.dart' as api;
+import 'package:flutter_application_1/models/cartitem.dart';
 
 class CartCheckout extends StatefulWidget {
-  final List<Product> products; 
+  final List<CartItem> products; 
 
   const CartCheckout({Key? key, required this.products}) : super(key: key);
 
@@ -25,7 +26,7 @@ class _CartCheckoutState extends State<CartCheckout> {
 
   // Fungsi untuk menghitung total harga produk
   int _calculateTotalAmount() {
-    int total = widget.products.fold(0, (sum, product) => sum + product.nominal);
+    int total = widget.products.fold(0, (sum, product) => sum + product.price);
     int ongkir = 5000;  // Ongkos kirim
     return total + ongkir;
   }
@@ -44,9 +45,9 @@ class _CartCheckoutState extends State<CartCheckout> {
       String kabupaten = _kabupatenController.text;
       double ongkir = 5000;  // Ongkos kirim
 
-      List<int> productIds = widget.products.map((product) => product.id).toList();
+      List<int> productIds = widget.products.map((product) => product.productId).toList();
       List<int> quantities = widget.products.map((product) => 1).toList(); // Asumsikan jumlah produk 1
-      List<int> subTotals = widget.products.map((product) => (product.nominal * 1).toInt()).toList(); // Asumsikan harga produk * 1 quantity
+      List<int> subTotals = widget.products.map((product) => (product.price * 1).toInt()).toList(); // Asumsikan harga produk * 1 quantity
       String paymentMethod = 'COD';
 
       bool success = await api.ApiService.submitOrder(
@@ -131,7 +132,7 @@ class _CartCheckoutState extends State<CartCheckout> {
             children: [
               // Display selected products
               ...widget.products.map((product) {
-                int subtotal = product.nominal;
+                int subtotal = product.price;
 
                 return Card(
                   elevation: 4,
@@ -144,14 +145,14 @@ class _CartCheckoutState extends State<CartCheckout> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Image.network(
-                          Uri.encodeFull('$host/${product.gambar}'),
+                          Uri.encodeFull('$host/${product.imageUrl}'),
                           height: 200,
                           width: double.infinity,
                           fit: BoxFit.cover,
                         ),
                         const SizedBox(height: 8),
                         Text(
-                          product.namaProduct,
+                          product.productName,
                           style: const TextStyle(
                             fontSize: 24,
                             fontWeight: FontWeight.bold,

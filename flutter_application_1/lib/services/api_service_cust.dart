@@ -1,10 +1,4 @@
 import 'dart:convert';
-import 'package:flutter_application_1/models/paketdata.dart';
-import 'package:flutter_application_1/models/productcust.dart';
-import 'package:flutter_application_1/models/pulsa.dart';
-import 'package:flutter_application_1/models/bayartagihan.dart';
-import 'package:flutter_application_1/models/services.dart';
-import 'package:flutter_application_1/models/transaksi.dart';
 import 'package:flutter_application_1/utils/const.dart';
 import 'package:flutter_application_1/utils/preferences_helper.dart';
 import 'package:http/http.dart' as http;
@@ -145,6 +139,77 @@ class ApiServiceCust {
     } catch (e) {
       print('Exception: ($e)');
       return null;
+    }
+  }
+
+   Future<String?> createTokenBayarTagihan(
+      {required int nominal,
+      required String name,
+      required String number,
+      required String jenisTagihan}) async {
+    try {
+      // Kirim data ke API Laravel untuk mendapatkan snapToken
+      final response = await http.post(
+        Uri.parse('$baseUrl/pulsa/createTransaction'),
+        body: json.encode({
+          'nominal': nominal,
+          'name': name,
+          'number': number,
+          'jenis_Tagihan': jenisTagihan,
+        }),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${PreferencesHelper.instance.accessToken}',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final jsonResponse = json.decode(response.body);
+        return jsonResponse['token'];
+      } else {
+        print('Error: ${response.body}');
+        return null;
+      }
+    } catch (e) {
+      print('Exception: ($e)');
+      return null;
+    }
+  }
+
+   Future<bool> submitBayartagihanOrder(
+    String nama,
+    String noTagihan,
+    String tipeTagihan,
+    double nominal,
+  ) async {
+    try {
+      final response = await http.post(
+        Uri.parse('$baseUrl/bayartagihan'),
+        body: json.encode({
+          'nama': nama,
+          'no_tagihan': noTagihan,
+          'tipe_tagihan': tipeTagihan,
+          'nominal': nominal,
+          'harga': nominal + 3000,
+        }),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${PreferencesHelper.instance.accessToken}'
+        },
+      );
+
+      if (response.statusCode == 200) {
+        log('Bayartagihan order created successfully');
+        return true; // Tambahkan return true jika berhasil
+      } else {
+        log('Failed to create Bayartagihan order: ${response.body}');
+        return false; // Return false jika gagal
+      }
+    } catch (e) {
+      log('Error creating bayartagihan order: $e');
+      return false; // Return false jika terjadi error
     }
   }
 

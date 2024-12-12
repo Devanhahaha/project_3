@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/services/api_service.dart';
 import 'package:flutter_application_1/screens/UserScreen/Payment_Page.dart';
+import 'package:flutter_application_1/services/api_service_cust.dart';
 
 class BayarTagihanPage extends StatefulWidget {
   @override
@@ -34,7 +34,7 @@ class _BayarTagihanPageState extends State<BayarTagihanPage> {
       }
 
       // Mengirim data tagihan ke API
-      bool res = await ApiService().submitBayartagihanOrder(
+      bool res = await ApiServiceCust().submitBayartagihanOrder(
         _namaController.text,
         _noTagihanController.text,
         _tipeTagihan ?? 'Tipe Tagihan',
@@ -47,7 +47,7 @@ class _BayarTagihanPageState extends State<BayarTagihanPage> {
       }
 
       // Panggil API untuk mendapatkan snapToken
-      String? snapToken = await ApiService().createTokenBayarTagihan(
+      String? snapToken = await ApiServiceCust().createTokenBayarTagihan(
         nominal: _selectedNominal!,
         name: _namaController.text,
         number: _noTagihanController.text,

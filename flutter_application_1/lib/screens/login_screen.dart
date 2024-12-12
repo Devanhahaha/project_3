@@ -39,7 +39,8 @@ class _LoginScreenState extends State<LoginScreen> {
       }
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Invalid credentials')),
+        const SnackBar(
+            content: Text('Mohon isi form yang ada terlebih dahulu!!!')),
       );
     }
   }

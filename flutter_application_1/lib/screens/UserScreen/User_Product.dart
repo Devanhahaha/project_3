@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/providers/cart_provider.dart';
 import 'package:flutter_application_1/utils/const.dart';
 import 'package:flutter_application_1/utils/preferences_helper.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 import 'dart:convert';
 import 'dart:developer';
 import '../../models/product.dart';
@@ -53,6 +55,7 @@ class _UserProductState extends State<UserProduct> {
 
   @override
   Widget build(BuildContext context) {
+    final cart = Provider.of<CartProvider>(context);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.blueAccent,
@@ -66,51 +69,34 @@ class _UserProductState extends State<UserProduct> {
         ),
         centerTitle: true,
         actions: [
-          // Menambahkan Icon Keranjang
-          IconButton(
-            icon: Stack(
-              children: [
-                Icon(
-                  Icons.shopping_cart,
-                  size: 28,
-                  color: Colors.white,
-                ),
-                if (cartItems.isNotEmpty)
-                  Positioned(
-                    right: 0,
-                    top: 0,
-                    child: Container(
-                      padding: EdgeInsets.all(2),
-                      decoration: BoxDecoration(
-                        color: Colors.red,
-                        shape: BoxShape.circle,
-                      ),
-                      constraints: BoxConstraints(
-                        minWidth: 18,
-                        minHeight: 18,
-                      ),
-                      child: Text(
-                        '${cartItems.length}', // Menampilkan jumlah item dalam keranjang
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 12,
-                          fontWeight: FontWeight.bold,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
+           Stack(
+            alignment: Alignment.center,
+            children: [
+              IconButton(
+                icon: Icon(Icons.shopping_cart),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => CartScreen(cartItems: cart.items.values.toList()),
+                    ),
+                  );
+                },
+              ),
+              if (cart.itemCount > 0)
+                Positioned(
+                  right: 8,
+                  top: 8,
+                  child: CircleAvatar(
+                    radius: 10,
+                    backgroundColor: Colors.red,
+                    child: Text(
+                      '${cart.itemCount}',
+                      style: TextStyle(color: Colors.white, fontSize: 12),
                     ),
                   ),
-              ],
-            ),
-            onPressed: () {
-              // Navigasi ke halaman keranjang
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => CartScreen(cartItems: cartItems),
                 ),
-              );
-            },
+            ],
           ),
         ],
       ),
@@ -265,12 +251,5 @@ class _UserProductState extends State<UserProduct> {
         ),
       ),
     );
-  }
-
-  // Fungsi untuk menambahkan produk ke keranjang
-  void addToCart(Product product) {
-    setState(() {
-      cartItems.add(product); // Menambahkan produk ke dalam keranjang
-    });
   }
 }

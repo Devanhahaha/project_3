@@ -96,42 +96,6 @@ class ApiService {
     }
   }
 
-
-
-  Future<String?> createTokenBayarTagihan(
-      {required int nominal,
-      required String name,
-      required String number,
-      required String jenisTagihan}) async {
-    try {
-      // Kirim data ke API Laravel untuk mendapatkan snapToken
-      final response = await http.post(
-        Uri.parse('$baseUrl/pulsa/createTransaction'),
-        body: json.encode({
-          'nominal': nominal,
-          'name': name,
-          'number': number,
-          'jenis_Tagihan': jenisTagihan,
-        }),
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-          'Authorization': 'Bearer ${PreferencesHelper.instance.accessToken}',
-        },
-      );
-
-      if (response.statusCode == 200) {
-        final jsonResponse = json.decode(response.body);
-        return jsonResponse['token'];
-      } else {
-        print('Error: ${response.body}');
-        return null;
-      }
-    } catch (e) {
-      print('Exception: ($e)');
-      return null;
-    }
-  }
   
 
   // Method to submit pulsa order

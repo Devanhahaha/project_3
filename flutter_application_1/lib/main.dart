@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:flutter_application_1/screens/UserScreen/user_screen.dart';
-// import 'package:flutter_application_1/screens/dashboard_screen.dart';
 import 'package:flutter_application_1/screens/home_screen.dart';
 import 'package:flutter_application_1/utils/preferences_helper.dart';
+import 'package:flutter_application_1/providers/cart_provider.dart'; 
 import 'screens/auth_screen.dart';
-// import 'screens/login_screen.dart'; 
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -13,7 +13,15 @@ void main() async {
   // Mengambil userType dari SharedPreferences
   String userType = PreferencesHelper.instance.userType ?? 'guest';
 
-  runApp(MyServiceApp(userType: userType));
+  runApp(
+    MultiProvider(
+      providers: [
+        // Add CartProvider here
+        ChangeNotifierProvider(create: (_) => CartProvider()),
+      ],
+      child: MyServiceApp(userType: userType),
+    ),
+  );
 }
 
 class MyServiceApp extends StatelessWidget {

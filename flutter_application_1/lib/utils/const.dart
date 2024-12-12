@@ -1,1 +1,1 @@
-const host = "http://192.168.104.27:8000";
+const host = "https://devancell.my.id";

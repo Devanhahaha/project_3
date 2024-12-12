@@ -41,25 +41,6 @@ class _PaymentPageState extends State<PaymentPage> {
   }
 
 
-// Future<void> _updateTransactionStatus(String status) async {
-//     const String baseUrl = '$host/api';
-//     final response = await http.post(
-//       Uri.parse('$baseUrl/pulsa/callback'),
-//       headers: {'Content-Type': 'application/json'},
-//       body: json.encode({
-//         'order_id': widget.snapToken, // Atau ID order yang relevan
-//         'transaction_status': status, // Status transaksi (settlement, cancel, pending, dll)
-//       }),
-//     );
-
-//     if (response.statusCode == 200) {
-//       print("Status transaksi berhasil diperbarui");
-//     } else {
-//       print("Gagal memperbarui status transaksi");
-//     }
-//   }
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(

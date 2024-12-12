@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/models/cartitem.dart';
 import 'package:flutter_application_1/screens/UserScreen/Cart_Screen.dart';
 import 'package:flutter_application_1/screens/UserScreen/Checkout_Screen.dart';
 import 'package:flutter_application_1/utils/const.dart';
+import 'package:provider/provider.dart';
+import '../../providers/cart_provider.dart';
 import '../../models/product.dart';
 
 class ProductDetailScreen extends StatefulWidget {
@@ -15,7 +18,6 @@ class ProductDetailScreen extends StatefulWidget {
 
 class _ProductDetailScreenState extends State<ProductDetailScreen> {
   int quantity = 1;
-  List<Product> cartItems = []; // Menyimpan data produk dalam keranjang
 
   void _increaseQuantity() {
     if (quantity < widget.product.stok) {
@@ -41,26 +43,25 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     }
   }
 
-  void _addToCart() {
-    setState(() {
-      cartItems.add(widget.product);
-    });
+  void _addToCart(BuildContext context) {
+    final cart = Provider.of<CartProvider>(context, listen: false);
+    cart.addItem(widget.product, widget.product.id, widget.product.namaProduct, widget.product.gambar, widget.product.nominal);
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(
-            'Produk ditambahkan ke keranjang (${cartItems.length} item total)'),
+        content: Text('Produk ditambahkan ke keranjang'),
       ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    final cart = Provider.of<CartProvider>(context);
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Detail Produk'),
         backgroundColor: Colors.blueAccent,
         actions: [
-          // Ikon Keranjang dengan Badge
           Stack(
             alignment: Alignment.center,
             children: [
@@ -70,12 +71,12 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => CartScreen(cartItems: cartItems,), // Halaman keranjang
+                      builder: (context) => CartScreen(cartItems: cart.items.values.toList()),
                     ),
                   );
                 },
               ),
-              if (cartItems.isNotEmpty)
+              if (cart.itemCount > 0)
                 Positioned(
                   right: 8,
                   top: 8,
@@ -83,7 +84,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                     radius: 10,
                     backgroundColor: Colors.red,
                     child: Text(
-                      '${cartItems.length}',
+                      '${cart.itemCount}',
                       style: TextStyle(color: Colors.white, fontSize: 12),
                     ),
                   ),
@@ -99,10 +100,8 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  // Gambar Produk
                   ClipRRect(
-                    borderRadius:
-                        BorderRadius.vertical(bottom: Radius.circular(16)),
+                    borderRadius: BorderRadius.vertical(bottom: Radius.circular(16)),
                     child: Image.network(
                       Uri.encodeFull('$host/${widget.product.gambar}'),
                       fit: BoxFit.cover,
@@ -137,13 +136,11 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                               children: [
                                 Text(
                                   'Jenis: ${widget.product.jenis}',
-                                  style: TextStyle(
-                                      fontSize: 16, color: Colors.black54),
+                                  style: TextStyle(fontSize: 16, color: Colors.black54),
                                 ),
                                 Text(
                                   'Merk: ${widget.product.merk}',
-                                  style: TextStyle(
-                                      fontSize: 16, color: Colors.black54),
+                                  style: TextStyle(fontSize: 16, color: Colors.black54),
                                 ),
                               ],
                             ),
@@ -152,9 +149,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                               'Stok: ${widget.product.stok > 0 ? "Tersedia (${widget.product.stok})" : "Habis"}',
                               style: TextStyle(
                                 fontSize: 16,
-                                color: widget.product.stok > 0
-                                    ? Colors.green
-                                    : Colors.red,
+                                color: widget.product.stok > 0 ? Colors.green : Colors.red,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -246,7 +241,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   ElevatedButton.icon(
-                    onPressed: _addToCart,
+                    onPressed: () => _addToCart(context),
                     icon: Icon(Icons.shopping_cart),
                     label: Text('Keranjang'),
                     style: ElevatedButton.styleFrom(

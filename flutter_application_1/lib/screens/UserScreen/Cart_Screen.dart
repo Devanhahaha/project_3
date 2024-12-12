@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/models/cartitem.dart';
 import 'package:flutter_application_1/screens/UserScreen/Cart_Checkout.dart';
 import 'package:flutter_application_1/utils/const.dart';
-import '../../models/product.dart';
+
 
 class CartScreen extends StatefulWidget {
-  final List<Product> cartItems;
+  final List<CartItem> cartItems;
 
   const CartScreen({Key? key, required this.cartItems}) : super(key: key);
 
@@ -57,7 +58,7 @@ class _CartScreenState extends State<CartScreen> {
     double total = 0;
     for (int i = 0; i < widget.cartItems.length; i++) {
       if (_selectedItems[i]) {
-        total += widget.cartItems[i].nominal;
+        total += widget.cartItems[i].price;
       }
     }
     return total;
@@ -89,17 +90,17 @@ class _CartScreenState extends State<CartScreen> {
                   ),
                   child: ListTile(
                     leading: Image.network(
-                      Uri.encodeFull('$host/${product.gambar}'),
+                      Uri.encodeFull('$host/${product.imageUrl}'),
                       fit: BoxFit.cover,
                       width: 50,
                       height: 50,
                     ),
                     title: Text(
-                      product.namaProduct,
+                      product.productName,
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
                     subtitle: Text(
-                      'Rp ${product.nominal}\nStok: ${product.stok}',
+                      'Rp ${product.price}\nStok: ${product.product.stok}',
                       style: TextStyle(color: Colors.black54),
                     ),
                     isThreeLine: true,
