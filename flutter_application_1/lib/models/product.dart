@@ -39,6 +39,10 @@ class Product {
     );
   }
 
+
+
+  
+
   // Method to convert a Product object to JSON
   Map<String, dynamic> toJson() {
     return {
@@ -54,9 +58,14 @@ class Product {
       'stok': stok,
     };
   }
+  
+  
 
   // Factory method to create a list of Product objects from a list of JSON objects
   static List<Product> fromJsonList(List<dynamic> jsonList) {
     return jsonList.map((json) => Product.fromJson(json)).toList();
   }
 }
+
+
+

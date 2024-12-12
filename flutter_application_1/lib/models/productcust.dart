@@ -13,11 +13,10 @@ class ProductCust {
   final String kabupaten;
   final String ongkir;
   final String kurir;
-  final String? ongkiru;
+  final String? ongkiru; // Pertimbangkan jika ini perlu
   final int quantity;
-  final int subTotal;
+  late final int subTotal; // Menggunakan late karena akan dihitung di konstruktor
   final Product? product;
-  // final String gambar;
 
   ProductCust({
     required this.id,
@@ -34,12 +33,12 @@ class ProductCust {
     required this.kurir,
     this.ongkiru,
     required this.quantity,
-    required this.subTotal,
-    this.product,
-    // required this.gambar,
-  });
+    required Product? product, // Menggunakan Product? untuk mendapatkan produk
+  }) : product = product {
+    // Menghitung subTotal saat konstruksi objek
+    subTotal = product?.nominal ?? 0 * quantity;
+  }
 
-  // Method fromJson untuk parsing JSON menjadi objek Transaction
   factory ProductCust.fromJson(Map<String, dynamic> json) {
     return ProductCust(
       id: json['id'],
@@ -56,13 +55,15 @@ class ProductCust {
       kurir: json['kurir'],
       ongkiru: json['ongkiru'],
       quantity: json['quantity'],
-      subTotal: json['sub_total'],
       product: json['product'] != null ? Product.fromJson(json['product']) : null,
-      // gambar: json['gambar'],
     );
   }
 
-  // Method fromJsonList untuk parsing list JSON menjadi list objek Transaction
+  // Method untuk menghitung subTotal berdasarkan quantity
+  void calculateSubTotal() {
+    subTotal = (product?.nominal ?? 0) * quantity;
+  }
+
   static List<ProductCust> fromJsonList(List<dynamic> jsonList) {
     return jsonList.map((json) => ProductCust.fromJson(json)).toList();
   }

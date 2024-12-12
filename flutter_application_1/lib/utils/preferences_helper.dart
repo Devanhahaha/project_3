@@ -21,6 +21,7 @@ class PreferencesHelper {
   // Keys for stored data
   static const String _keyAccessToken = 'access_token';
   static const String _keyUserData = 'user_data';
+  static const String _keyUserType = 'user_type';  // Key untuk menyimpan role
 
   // Method to save access_token
   Future<void> saveAccessToken(String token) async {
@@ -38,9 +39,18 @@ class PreferencesHelper {
   // Method to retrieve user data
   String? get userData => _preferences?.getString(_keyUserData);
 
+  // Method to save user type (role) such as 'admin' or 'user'
+  Future<void> saveUserType(String userType) async {
+    await _preferences?.setString(_keyUserType, userType);
+  }
+
+  // Method to retrieve user type (role)
+  String? get userType => _preferences?.getString(_keyUserType);
+
   // Method to clear all login-related data
   Future<void> clearLoginData() async {
     await _preferences?.remove(_keyAccessToken);
     await _preferences?.remove(_keyUserData);
+    await _preferences?.remove(_keyUserType); // Clear user type as well
   }
 }

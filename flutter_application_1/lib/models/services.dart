@@ -5,7 +5,7 @@ class Services {
   String keluhan;
   String jenisHp;
   String kontak;
-  int nominal;
+  int? nominal;
   DateTime createdAt;
   DateTime updatedAt;
   String alamat;
