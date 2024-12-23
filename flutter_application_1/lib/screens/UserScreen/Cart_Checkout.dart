@@ -6,8 +6,9 @@ import 'package:flutter_application_1/models/cartitem.dart';
 
 class CartCheckout extends StatefulWidget {
   final List<CartItem> products; 
+  final int totalAmount;
 
-  const CartCheckout({Key? key, required this.products}) : super(key: key);
+  const CartCheckout({Key? key, required this.products, required this.totalAmount}) : super(key: key);
 
   @override
   _CartCheckoutState createState() => _CartCheckoutState();
@@ -25,7 +26,7 @@ class _CartCheckoutState extends State<CartCheckout> {
 
   // Fungsi untuk menghitung total harga produk
   int _calculateTotalAmount() {
-    int total = widget.products.fold(0, (sum, product) => sum + product.price);
+    int total = widget.totalAmount;
     int ongkir = 5000;  // Ongkos kirim
     return total + ongkir;
   }
@@ -45,9 +46,24 @@ class _CartCheckoutState extends State<CartCheckout> {
       double ongkir = 5000;  // Ongkos kirim
 
       List<int> productIds = widget.products.map((product) => product.productId).toList();
-      List<int> quantities = widget.products.map((product) => 1).toList(); // Asumsikan jumlah produk 1
-      List<int> subTotals = widget.products.map((product) => (product.price * 1).toInt()).toList(); // Asumsikan harga produk * 1 quantity
+      List<int> quantities = widget.products.map((product) => product.quantity).toList(); // Asumsikan jumlah produk 1
+      List<int> subTotals = widget.products.map((product) {
+  return (product.price * product.quantity).toInt();  // Hitung subtotal untuk setiap produk
+}).toList();
       String paymentMethod = 'COD';
+
+      // Cetak data yang akan dikirim ke console
+    debugPrint('Alamat: $alamat');
+    debugPrint('Nomor HP: $noHp');
+    debugPrint('Catatan: $catatan');
+    debugPrint('Kurir: $kurir');
+    debugPrint('Provinsi: $provinsi');
+    debugPrint('Kabupaten: $kabupaten');
+    debugPrint('Ongkir: $ongkir');
+    debugPrint('Product IDs: $productIds');
+    debugPrint('Quantities: $quantities');
+    debugPrint('Subtotals: $subTotals');
+    debugPrint('Payment Method: $paymentMethod');
 
       bool success = await api.ApiService.submitOrder(
         alamat,
@@ -70,7 +86,7 @@ class _CartCheckoutState extends State<CartCheckout> {
         return;
       }
 
-      int totalAmount = subTotals.reduce((a, b) => a + b) + ongkir.toInt();
+      int totalAmount = widget.totalAmount + ongkir.toInt();
       String? snapToken = await api.ApiService().createTokenOrder(
         phone: _noHpController.text,
         totalAmount: totalAmount,
@@ -83,7 +99,7 @@ class _CartCheckoutState extends State<CartCheckout> {
         return;
       }
 
-      _showMidtransPayment(snapToken);
+      _showMidtransPayment(snapToken); // Memanggil metode untuk menampilkan halaman pembayaran
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Terjadi kesalahan: $e')),
@@ -95,6 +111,7 @@ class _CartCheckoutState extends State<CartCheckout> {
     }
   }
 
+  // Metode untuk menampilkan halaman pembayaran menggunakan snap token
   void _showMidtransPayment(String snapToken) async {
     final result = await Navigator.push(
       context,
@@ -131,7 +148,7 @@ class _CartCheckoutState extends State<CartCheckout> {
             children: [
               // Display selected products
               ...widget.products.map((product) {
-                int subtotal = product.price;
+                int subtotal = _calculateTotalAmount();
 
                 return Card(
                   elevation: 4,

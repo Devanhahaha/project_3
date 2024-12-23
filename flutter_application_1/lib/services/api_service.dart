@@ -74,13 +74,14 @@ class ApiService {
         await PreferencesHelper.instance.saveUserData(jsonEncode(data['user']));
 
         String role = data['user']['first_name'];
+        print('ini token:' + data['token']);
 
         // Menyimpan role ke SharedPreferences
         await PreferencesHelper.instance.saveUserType(role.toLowerCase());
 
         return {
           'status': true,
-          'role': role.toLowerCase() == 'admin' ? 'admin' : 'user'
+          'role': role.toLowerCase() == 'admin' ? 'admin' : '$role'
         };
       } else if (response.statusCode == 401) {
         log('Login failed: Unauthorized');
@@ -96,7 +97,44 @@ class ApiService {
     }
   }
 
-  
+ static Future<bool> register(
+  String firstName,
+  String lastName,
+  String email,
+  String password,
+) async {
+  try {
+    final response = await http.post(
+      Uri.parse('$baseUrl/register'), // Sesuaikan endpoint API registrasi
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      },
+      body: json.encode({
+        'first_name': firstName,
+        'last_name': lastName,
+        'email': email,
+        'password': password,
+        'password_confirmation': password,
+      }),
+    );
+
+    // Periksa status code untuk menentukan apakah registrasi berhasil
+    if (response.statusCode == 201) {
+      // Jika API mengembalikan status 201, registrasi berhasil
+      return true;
+    } else {
+      // Jika status bukan 201, berarti gagal (misalnya, ada error dari API)
+      print('Error: ${response.body}');
+      return false;
+    }
+  } catch (e) {
+    // Tangani jika terjadi error jaringan atau masalah lain
+    print('Error: $e');
+    return false;
+  }
+}
+
 
   // Method to submit pulsa order
   Future<bool> submitPulsaOrder(

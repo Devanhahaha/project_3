@@ -44,6 +44,12 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
 
   void _addToCart(BuildContext context) {
     final cart = Provider.of<CartProvider>(context, listen: false);
+    if (widget.product.stok <= 0) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('Maaf stok habis'),
+      ));
+      return;
+    } 
     cart.addItem(widget.product, widget.product.id, widget.product.namaProduct, widget.product.gambar, widget.product.nominal);
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(

@@ -6,7 +6,8 @@ import 'user_dashboard.dart';
 import '../login_screen.dart';
 
 class UserScreen extends StatefulWidget {
-  const UserScreen({Key? key}) : super(key: key);
+  final String role;
+  const UserScreen({Key? key, required this.role}) : super(key: key);
 
   @override
   State<UserScreen> createState() => _UserScreenState();
@@ -15,12 +16,9 @@ class UserScreen extends StatefulWidget {
 class _UserScreenState extends State<UserScreen> {
   int _currentIndex = 1;
 
-  // Daftar halaman untuk navigasi
-  final List<Widget> _pages = [
-    UserLayanan(),
-    UserDashboard(),
-    UserProduct(),
-  ];
+  late List<Widget> _pages;
+
+  
 
   void _logout() {
     // Navigasi ke LoginScreen
@@ -62,6 +60,13 @@ class _UserScreenState extends State<UserScreen> {
 
   @override
   Widget build(BuildContext context) {
+
+     _pages = [
+      UserLayanan(),
+      UserDashboard(role: widget.role),
+      UserProduct(),
+    ];
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: IndexedStack(

@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 
 class UserDashboard extends StatelessWidget {
-  @override
+  final String role;
+
+  // Tambahkan parameter role pada konstruktor
+  const UserDashboard({Key? key, required this.role}) : super(key: key);
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -70,7 +73,7 @@ class UserDashboard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Text(
-                      'Welcome, User!',
+                      'Welcome, $role!',
                       style: TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
@@ -114,7 +117,7 @@ class UserDashboard extends StatelessWidget {
                     SizedBox(height: 10),
                     SingleChildScrollView(
                       child: Text(
-                        'MyAwesomeApp adalah aplikasi yang dirancang untuk mempermudah '
+                        'DevanCell adalah aplikasi yang dirancang untuk mempermudah '
                         'kebutuhan digital Anda, mulai dari pembelian pulsa, paket data, '
                         'pembayaran tagihan, hingga pengiriman barang. '
                         'Kami berdedikasi untuk memberikan layanan yang cepat, aman, dan terpercaya.',

@@ -8,7 +8,7 @@ class Product {
   final DateTime createdAt;
   final DateTime updatedAt;
   final int nominal;
-  final int stok;
+  int stok;
 
   Product({
     required this.id,
